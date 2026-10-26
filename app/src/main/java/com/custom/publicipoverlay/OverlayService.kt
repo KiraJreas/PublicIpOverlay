@@ -8,6 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.os.IBinder
 import android.view.Gravity
 import android.view.WindowManager
@@ -20,6 +22,7 @@ class OverlayService : Service() {
     private lateinit var windowManager: WindowManager
     private lateinit var ipTextView: TextView
     private var isRunning = false
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     companion object {
         private const val CHANNEL_ID = "overlay_ip_channel"
@@ -73,7 +76,7 @@ class OverlayService : Service() {
                         ipTextView.text = "公网IP: 网络错误"
                     }
                 }
-                Thread.sleep(60000) // 每60秒刷新一次
+                Thread.sleep(60000)
             }
         }
     }
@@ -82,7 +85,7 @@ class OverlayService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "IP悬浮窗服务",
+                "IP 悬浮窗服务",
                 NotificationManager.IMPORTANCE_LOW
             )
             val manager = getSystemService(NotificationManager::class.java)
@@ -94,12 +97,12 @@ class OverlayService : Service() {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(this, CHANNEL_ID)
                 .setContentTitle("PublicIP Overlay")
-                .setContentText("悬浮IP显示运行中")
+                .setContentText("悬浮 IP 显示运行中")
                 .build()
         } else {
             Notification.Builder(this)
                 .setContentTitle("PublicIP Overlay")
-                .setContentText("悬浮IP显示运行中")
+                .setContentText("悬浮 IP 显示运行中")
                 .build()
         }
     }
